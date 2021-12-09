@@ -1,4 +1,5 @@
 import io.jbotsim.core.Color;
+import io.jbotsim.core.Link;
 import io.jbotsim.core.Message;
 import io.jbotsim.core.Node;
 import io.jbotsim.ui.painting.JDirectedLinkPainter;
@@ -10,6 +11,7 @@ public class RouterNode extends Node {
     Node parent = null;
     List<Node> children = new ArrayList<>();
     private int hop = 0;
+    Node sender;
 
     @Override
     public void onSelection() {
@@ -20,6 +22,8 @@ public class RouterNode extends Node {
 
     @Override
     public void onMessage(Message message) {
+        sender = message.getSender();
+
         if (message.getFlag().equals("CONSTRUCTION")) {
             if (parent == null) {
                 parent = message.getSender();
@@ -50,8 +54,29 @@ public class RouterNode extends Node {
         else if(message.getFlag().equals("ELIMINATION")){
             children.remove(message.getSender());
         }
-//        String s = "Notre noeud : " + getID() + " notre parent " + parent.getID() ;
-//        System.out.println(s);
+        //Le sender à detecter un changement (une suppression), alors on envoie une MAJ à tous ses voisins
+        else if(message.getFlag().equals("DELETE")){
+            send(sender, new Message(hop, "UPDATE"));
+        }
+        // 1er cas : quand on supprime une arrete, on change de pere, et on prends le noeud le plus proche de la destination (hop le plus petit)
+        else if (message.getFlag().equals("UPDATE")){
+                if (hop >= (int) message.getContent()) {
 
+                    if (getCommonLinkWith(parent) != null) {
+                        getCommonLinkWith(parent).setWidth(1);
+                    }
+
+                    sendAll(new Message("","DELETE"));
+
+                    parent = sender;
+                    getCommonLinkWith(parent).setWidth(4);
+                }
+        }
+    }
+
+    @Override
+    public void onLinkRemoved(Link link) {
+        super.onLinkRemoved(link);
+        sendAll(new Message("","DELETE"));
     }
 }
