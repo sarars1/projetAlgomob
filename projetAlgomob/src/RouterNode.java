@@ -12,6 +12,7 @@ public class RouterNode extends Node {
     List<Node> children = new ArrayList<>();
     int hop = 1;
     Node sender;
+    boolean constructed = false;
 
 
     // A destination node has been selected, we send a message to our neighbors and begin the routing/construction
@@ -21,6 +22,7 @@ public class RouterNode extends Node {
         setIconSize(20);
         sendAll(new Message(""+hop, "CONSTRUCTION"));
         setColor(Color.yellow);
+        constructed = true;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class RouterNode extends Node {
                     send(parent, new Message("", "ADOPTION"));
                     hop = h + 1;
                     sendAll(new Message(hop, "CONSTRUCTION"));
-
+                    constructed = true;
                 } else {
                     // If we have a parent but the sender has smaller hop than them, if so the sender becomes our new parent, our hop becomes their hop + 1
                     // t+1 = hop of the sender node + 1 (for us)
@@ -72,8 +74,8 @@ public class RouterNode extends Node {
                 children.remove(message.getSender());
                 break;
 
-            // One of our neighbors detected a link removal, so we send our neighbor our hop
-            case "DELETE":
+            // A link was added or removed
+            case "LINK REMOVED/ADDED":
                 send(sender, new Message(hop, "UPDATE"));
                 break;
 
@@ -119,8 +121,17 @@ public class RouterNode extends Node {
     @Override
     public void onLinkRemoved(Link link) {
         super.onLinkRemoved(link);
-        sendAll(new Message("","DELETE"));
+        sendAll(new Message("","LINK REMOVED/ADDED"));
         setColor(Color.red);
+    }
+
+    @Override
+    public void onLinkAdded(Link link){
+        super.onLinkAdded(link);
+        if(constructed){
+            sendAll(new Message("", "LINK REMOVED/ADDED"));
+            setColor(Color.red);
+        }
     }
 
     @Override
