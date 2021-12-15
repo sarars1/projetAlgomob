@@ -88,11 +88,16 @@ public class RouterNode extends Node {
                     hop = h + 1;
                     parent = sender;
                     send(sender, new Message("", "ADOPTION"));
+
+                    for(Node child : children){
+                        send(child, new Message(hop, "RECEIVED"));
+                    }
                 }
 
                 // If the neighbor's hop is equal to ours, we check to see if there's a neighbor than sent us a
                 // message with a smaller hop. -> We give priority to smaller hops
                 else if (hop == h) {
+                    System.out.println(getID() + " " + children);
                     send(parent, new Message("", "ABANDON"));
                     Node new_parent = sender;
                     int new_hop = hop;
@@ -110,10 +115,23 @@ public class RouterNode extends Node {
                     hop = new_hop + 1;
                     parent = new_parent;
                     send(new_parent, new Message("", "ADOPTION"));
+
+                    for(Node child : children){
+                        send(child, new Message(hop, "RECEIVED"));
+                    }
                 }
                 setColor(null);
-
                 break;
+
+            case "RECEIVED":
+                int a = hop - h;
+                System.out.println(getID()+ " parent : " + parent.getID() + ", " +a);
+                if(hop-h>1){
+                    hop = h +1;
+                    for(Node child : children){
+                        send(child, new Message(hop, "RECEIVED"));
+                    }
+                }
         }
     }
 
