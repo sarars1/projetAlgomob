@@ -1,3 +1,5 @@
+package ProjetAlgoMob;
+
 import io.jbotsim.core.Color;
 import io.jbotsim.core.Link;
 import io.jbotsim.core.Message;
@@ -48,7 +50,7 @@ public class RouterNode extends Node {
                     constructed = true;
                 } else {
                     // If we have a parent but the sender has smaller hop than them, if so the sender becomes our new parent, our hop becomes their hop + 1
-                    // t+1 = hop of the sender node + 1 (for us)
+                    // t+1 = hop of the sender node + 1 (for us) *** on utilse plus non ?!
                     if (h + 1 < hop) {
 
                         send(parent, new Message("", "ABANDON"));
@@ -123,6 +125,9 @@ public class RouterNode extends Node {
                 setColor(null);
                 break;
 
+            // When the parent changes their parent, we recalculate the son's hop and update it,
+            // it will now be his parent's hop + 1
+
             case "RECEIVED":
                 int a = hop - h;
                 System.out.println(getID()+ " parent : " + parent.getID() + ", " +a);
@@ -143,6 +148,7 @@ public class RouterNode extends Node {
         setColor(Color.red);
     }
 
+    // We alert our neighbors a link has been added
     @Override
     public void onLinkAdded(Link link){
         super.onLinkAdded(link);
