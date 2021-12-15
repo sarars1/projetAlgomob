@@ -1,5 +1,3 @@
-package ProjetAlgoMob;
-
 import io.jbotsim.core.Color;
 import io.jbotsim.core.Link;
 import io.jbotsim.core.Message;
@@ -8,12 +6,12 @@ import io.jbotsim.core.Node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class RouterNode extends Node {
     Node parent = null;
     List<Node> children = new ArrayList<>();
     int hop = 1;
-    Node sender;
     boolean constructed = false;
 
 
@@ -29,7 +27,7 @@ public class RouterNode extends Node {
 
     @Override
     public void onMessage(Message message) {
-        sender = message.getSender();
+        Node sender = message.getSender();
 
         int h = 0;
         if(!message.getContent().equals("")){
@@ -50,7 +48,7 @@ public class RouterNode extends Node {
                     constructed = true;
                 } else {
                     // If we have a parent but the sender has smaller hop than them, if so the sender becomes our new parent, our hop becomes their hop + 1
-                    // t+1 = hop of the sender node + 1 (for us) *** on utilse plus non ?!
+                    // t+1 = hop of the sender node + 1 (for us)
                     if (h + 1 < hop) {
 
                         send(parent, new Message("", "ABANDON"));
@@ -77,7 +75,7 @@ public class RouterNode extends Node {
                 break;
 
             // A link was added or removed
-            case "LINK REMOVED/ADDED":
+            case "MAYBE LIAR":
                 send(sender, new Message(hop, "UPDATE"));
                 break;
 
@@ -99,7 +97,7 @@ public class RouterNode extends Node {
                 // If the neighbor's hop is equal to ours, we check to see if there's a neighbor than sent us a
                 // message with a smaller hop. -> We give priority to smaller hops
                 else if (hop == h) {
-                    System.out.println(getID() + " " + children);
+
                     send(parent, new Message("", "ABANDON"));
                     Node new_parent = sender;
                     int new_hop = hop;
@@ -115,24 +113,38 @@ public class RouterNode extends Node {
                         }
                     }
                     hop = new_hop + 1;
-                    parent = new_parent;
                     send(new_parent, new Message("", "ADOPTION"));
+                    parent = new_parent;
 
-                    for(Node child : children){
+                    for (Node child : children) {
                         send(child, new Message(hop, "RECEIVED"));
                     }
                 }
+                    // CAS OÙ LES HOPS DES VOISINS SONT PLUS GRANDES QUE LE NOTRE
+//                }else if(hop<h && getCommonLinkWith(parent) == null){
+//                    send(parent, new Message("", "ABANDON"));
+//
+//                    List<Node> neighbors = getNeighbors();
+//                    Random rand = new Random();
+//                    Node randomNode = neighbors.get(rand.nextInt(neighbors.size()));
+//                    parent = randomNode;
+//                    send(parent, new Message("", "ADOPTION"));
+//                    hop = h+1;
+//
+//                }
                 setColor(null);
                 break;
 
-            // When the parent changes their parent, we recalculate the son's hop and update it,
-            // it will now be his parent's hop + 1
-
             case "RECEIVED":
-                int a = hop - h;
-                System.out.println(getID()+ " parent : " + parent.getID() + ", " +a);
-                if(hop-h>1){
-                    hop = h +1;
+//
+                // If our father is further from the destination than us, we might need to change our father
+                if(h+1>hop){
+                    sendAll(new Message("","MAYBE LIAR"));
+                    setColor(Color.red);
+                }
+                // If our father is closer to the destination node, we have to update our distance as well
+                else if(hop-h>1){
+                    hop = h + 1;
                     for(Node child : children){
                         send(child, new Message(hop, "RECEIVED"));
                     }
@@ -144,7 +156,7 @@ public class RouterNode extends Node {
     @Override
     public void onLinkRemoved(Link link) {
         super.onLinkRemoved(link);
-        sendAll(new Message("","LINK REMOVED/ADDED"));
+        sendAll(new Message("","MAYBE LIAR"));
         setColor(Color.red);
     }
 
@@ -153,7 +165,7 @@ public class RouterNode extends Node {
     public void onLinkAdded(Link link){
         super.onLinkAdded(link);
         if(constructed){
-            sendAll(new Message("", "LINK REMOVED/ADDED"));
+            sendAll(new Message("", "MAYBE LIAR"));
             setColor(Color.red);
         }
     }
