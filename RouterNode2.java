@@ -21,7 +21,7 @@ public class RouterNode2 extends Node {
     public void onSelection() {
         parent = this;
         setIconSize(20);
-        sendAll(new Message(""+hop, "UPDATE"));
+
         setColor(Color.yellow);
         racine = true;
     }
@@ -31,7 +31,7 @@ public class RouterNode2 extends Node {
         List<Message> msgs = getMailbox();
 
         // If we are not the destination node and have received messages, we update our state
-        if(msgs.size()!=0 && !racine){
+        if(!racine){
             Node new_parent = null;
             int new_hop = graph_size;
 
@@ -46,26 +46,28 @@ public class RouterNode2 extends Node {
                 }
             }
             // If a node is disconnected from the destination node, it will become pink and the console will print it
-            if(new_hop == graph_size){
+            if(new_hop == graph_size ){
                 System.out.println("DISCONNECTED NODE : " + getID());
                 setColor(Color.pink);
             }
 
             // We update our distance to the destination node and our parent if it isn't the closest to the destination node
             else{
+                    setColor(null);
                     hop = new_hop + 1;
                     if(parent != new_parent){
                         send(parent, new Message("", "ABANDON"));
                         send(new_parent, new Message("", "ADOPTION"));
                         parent = new_parent;
+                        setColor(Color.red);
                     }
-                    setColor(null);
+
                     sendAll(new Message(hop, "UPDATE"));
             }
         }
 
         // If we are the destination node, we just send a message with our hop
-        else if(racine){
+        else{
             sendAll(new Message(hop, "UPDATE"));
         }
 
@@ -90,6 +92,17 @@ public class RouterNode2 extends Node {
         }
     }
 
+    @Override
+    public void onLinkRemoved(Link link){
+        super.onLinkRemoved(link);
+        setColor(Color.orange);
+    }
+
+    @Override
+    public void onLinkAdded(Link link){
+        super.onLinkAdded(link);
+        setColor(Color.orange);
+    }
     @Override
     public String toString() {
         return "ID= "+ getID() + " hop= " + hop ;
