@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RouterNode2 extends Node {
+public class RouterNode extends Node {
     Node parent = null;
     List<Node> children = new ArrayList<>();
     int hop = 0;
