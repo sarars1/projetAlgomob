@@ -21,15 +21,13 @@ public class RouterNode extends Node {
     public void onSelection() {
         parent = this;
         setIconSize(20);
-
-        setColor(Color.yellow);
+        setColor(Color.green);
         racine = true;
     }
 
     @Override
     public void onClock(){
         List<Message> msgs = getMailbox();
-
         // If we are not the destination node and have received messages, we update our state
         if(!racine){
             Node new_parent = null;
@@ -49,34 +47,33 @@ public class RouterNode extends Node {
             if(new_hop == graph_size ){
                 System.out.println("DISCONNECTED NODE : " + getID());
                 setColor(Color.pink);
+                send(parent, new Message("", "ABANDON"));
+                parent = null;
             }
 
             // We update our distance to the destination node and our parent if it isn't the closest to the destination node
             else{
-                    setColor(null);
-                    hop = new_hop + 1;
-                    if(parent != new_parent){
-                        send(parent, new Message("", "ABANDON"));
-                        send(new_parent, new Message("", "ADOPTION"));
-                        parent = new_parent;
-                        setColor(Color.red);
-                    }
-
-                    sendAll(new Message(hop, "UPDATE"));
+                setColor(null);
+                hop = new_hop + 1;
+                if(parent != new_parent){
+                    send(parent, new Message("", "ABANDON"));
+                    send(new_parent, new Message("", "ADOPTION"));
+                    parent = new_parent;
+                    setColor(Color.red);
+                }
+                sendAll(new Message(hop, "UPDATE"));
             }
         }
-
         // If we are the destination node, we just send a message with our hop
         else{
             sendAll(new Message(hop, "UPDATE"));
+            setColor(Color.green);
         }
-
     }
+
     @Override
     public void onMessage(Message message) {
-
         switch (message.getFlag()) {
-
             // A node (sender) becomes our child
             case "ADOPTION":
                 getCommonLinkWith(message.getSender()).setWidth(4);
@@ -92,24 +89,20 @@ public class RouterNode extends Node {
         }
     }
 
-    // We alert our neighbors a link has been removed
     @Override
     public void onLinkRemoved(Link link){
         super.onLinkRemoved(link);
         setColor(Color.orange);
     }
 
-    // We alert our neighbors a link has been added
     @Override
     public void onLinkAdded(Link link){
         super.onLinkAdded(link);
         setColor(Color.orange);
     }
-    
     @Override
     public String toString() {
         return "ID= "+ getID() + " hop= " + hop ;
     }
 }
-
 
