@@ -4,7 +4,7 @@
 [![forthebadge](https://forthebadge.com/images/badges/powered-by-coffee.svg)](https://forthebadge.com)
 
 
-Nous nous trouvons dans un graphe à la base connexe, mais qui peut varier dans le temps.
+Nous nous trouvons dans un graphe.
 Nous avons un noeud appelé destination. Nous allons construire un sous-graphe tel que chaque
 noeud de ce sous-graphe ait comme parent son voisin le plus proche de la destination. L’idée est
 de construire des ’chemins’ vers la destination. La destination sera mise en jaune et augmentée
@@ -13,7 +13,7 @@ et des flèches.
 
 ### Pré-requis
 
-Pour bien compiler ce projet, il est recommender d'utiliser Intellij (IDE)
+Pour bien compiler ce projet, il est recommendé d'utiliser Intellij (IDE)
 
 [JBotSim](https://jbotsim.io/?p=examples/helloworld) - Voir prise en Main de JBotSim
 
@@ -22,7 +22,7 @@ Pour bien compiler ce projet, il est recommender d'utiliser Intellij (IDE)
 
 Pour commencer, clonez le projet https://github.com/sarars1/projetAlgomob.git, et utilisez Intellij pour l'ouvrir et compiler.
 
-[Le fichier est constituer ainsi]                                                                                                       
+[Le fichier est constitué ainsi]                                                                                                       
 **RouterNode.java** constituer notre algorithme principale (a revoir)                                                                                             
 **JParentLinkPainter.java** nous permet de visualiser nos liens en gras avec des fleches qui indique de l'enfant au parent                                         
 Rendez-vous dans le **MainRouteur.java** pour executer le projet
@@ -30,12 +30,10 @@ Rendez-vous dans le **MainRouteur.java** pour executer le projet
 
 ## Démarrage
 
-Une fois compiler, nous obtenons une fénetre JBotSim, nous pouvons alors uploade une topologie déjà defini **testTopo.iml** ou **t2.iml**.
-Ou definir une nouvelle topologie, simplement avec un clic droit de notre souris.
+Une fois compilé, nous obtenons une fenêtre JBotSim, nous pouvons alors charger une topologie déjà définie**testTopo.iml** ou **t2.iml**.
+Ou définir une nouvelle topologie, en ajoutant des noeuds avec un click gauche. 
 
-Et choisir le sommet de destination, qui deviens **Jaune**                                                                                                         
-Quand on casser un lien, le sommet deviens un menteur **Rouge**,                                                                                                   
-Et ses voisins devient des possibles menteurs **Orange**,                                                                                                       
+Et choisir le sommet de destination (Ctrl+click gauche), qui deviens **Jaune**                                                                                     Quand on casser un lien, le sommet devient un possible menteur **Orange**,                                                                                          Et si le noeud ou ses voisins sont des menteurs ils deviennent **Rouge**                                             
 Et pour un/des sommet(s) isolés, il(s) devient **Rose**,                                                                                                       
 
 
@@ -43,7 +41,7 @@ Désormais, à vous de jouer !!!
 
 ## Fabriqué avec
 
-Pour développer notre projet, nous avons utilsez
+Pour développer notre projet, nous avons utilisé
 
 * [IntelliJ](https://www.jetbrains.com/fr-fr/idea/) - Editeur de textes
 
