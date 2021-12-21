@@ -13,6 +13,8 @@ public class RouterNode extends Node {
     List<Node> children = new ArrayList<>();
     int hop = 0;
     boolean racine = false;
+    
+    // Change size depending on the graph used and its size
     int graph_size = 17;
 
 
