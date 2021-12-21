@@ -10,7 +10,6 @@ import io.jbotsim.ui.JViewer;
 
 
 public class MainRouter {
-    public final static int n = 5;
     public static void main(String[] args) {
 
         Topology tp = new Topology();
