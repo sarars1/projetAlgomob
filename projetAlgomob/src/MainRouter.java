@@ -20,7 +20,7 @@ public class MainRouter {
         JTopology jtp = new JTopology(tp);
         jtp.addLinkPainter(new JParentLinkPainter()); // Parent-child arrows
         new JViewer(jtp); 
-        tp.start(); // 
+        tp.start(); 
  //       tp.pause(); // single step mode
     }
 }
