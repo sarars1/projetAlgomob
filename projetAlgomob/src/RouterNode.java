@@ -47,7 +47,6 @@ public class RouterNode extends Node {
             }
             // If a node is disconnected from the destination node, it will become pink and the console will print it
             if(new_hop == graph_size ){
-                System.out.println("DISCONNECTED NODE : " + getID());
                 setColor(Color.pink);
                 send(parent, new Message("", "ABANDON"));
                 parent = null;
