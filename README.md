@@ -30,7 +30,7 @@ Rendez-vous dans le **MainRouteur.java** pour executer le projet
 
 ## Démarrage
 
-Une fois compilé, nous obtenons une fenêtre JBotSim, nous pouvons alors charger une topologie déjà définie**testTopo.iml** ou **t2.iml**.
+Une fois compilé, nous obtenons une fenêtre JBotSim, nous pouvons alors charger une topologie déjà définie **testTopo.iml** ou **t2.iml**.
 Ou définir une nouvelle topologie, en ajoutant des noeuds avec un click gauche. 
 
 Et choisir le sommet de destination (Ctrl+click gauche), qui devient **Vert**                                                                                     Quand on casse un lien, le sommet devient un possible menteur **Orange**,                                                                                          Et si le noeud ou ses voisins sont des menteurs ils deviennent **Rouge**                                             
